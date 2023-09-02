@@ -1,0 +1,46 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "s01e01.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "189810.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 2
+        },
+        "lakeside_limbo.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 2
+        },
+        "s01e01.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 4664,
+                "y": -287.3333333333333
+            }
+        }
+    },
+    "last.exportedFilePath": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/LakaOrangatangaStages",
+    "last.externalTilesetPath": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/LakaOrangatangaStages",
+    "last.imagePath": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/LakaOrangatangaStages/Tiles",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "s01e01.tmx",
+        "lakeside_limbo.tsx"
+    ],
+    "project": "s01e01.tiled-project",
+    "recentFiles": [
+        "lakeside_limbo.tsx",
+        "s01e01.tmx"
+    ],
+    "resizeMap.removeObjects": true,
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx"
+}
