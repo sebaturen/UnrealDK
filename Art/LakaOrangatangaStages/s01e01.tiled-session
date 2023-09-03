@@ -18,11 +18,11 @@
             "scaleInEditor": 2
         },
         "s01e01.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 2,
+            "scale": 0.25,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 4664,
-                "y": -287.3333333333333
+                "x": 612,
+                "y": 154
             }
         }
     },
