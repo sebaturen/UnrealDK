@@ -15,14 +15,14 @@
         },
         "lakeside_limbo.tsx": {
             "scaleInDock": 3,
-            "scaleInEditor": 2
+            "scaleInEditor": 3
         },
         "s01e01.tmx": {
-            "scale": 0.25,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 612,
-                "y": 154
+                "x": 3167,
+                "y": 226
             }
         }
     },
