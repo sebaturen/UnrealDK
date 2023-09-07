@@ -3,3 +3,6 @@
 
 #include "Items/Banana.h"
 
+ABanana::ABanana()
+{
+}

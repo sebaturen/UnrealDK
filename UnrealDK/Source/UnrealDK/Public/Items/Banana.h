@@ -13,5 +13,8 @@ UCLASS()
 class UNREALDK_API ABanana : public ADKItems
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	ABanana();
 };

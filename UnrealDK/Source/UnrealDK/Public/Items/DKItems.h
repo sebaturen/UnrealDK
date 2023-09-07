@@ -15,15 +15,17 @@ public:
 	// Sets default values for this actor's properties
 	ADKItems();
 	
-	UFUNCTION(BlueprintNativeEvent, Category = "GameItems")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GameItems")
 	void PickUp();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameItems")
+	bool AutoPlaySound;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

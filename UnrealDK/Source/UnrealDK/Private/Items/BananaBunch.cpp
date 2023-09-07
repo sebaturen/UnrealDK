@@ -8,23 +8,37 @@
 void ABananaBunch::PickUpAnimation()
 {
 	UWorld* const World = GetWorld();
-	int totalBanana = 10;
+	int timer = 0;
+	int spawnedBananas = totalAnimBananas;
 
 	if (World)
 	{
-		while (totalBanana > 0)
+		while (spawnedBananas >= 0)
 		{
-			FVector SpawnLocation = GetActorLocation();
-			SpawnLocation.Y = 100;
+			FTimerHandle TimerHandle;
+			World->GetTimerManager().SetTimer(TimerHandle, this, &ABananaBunch::AnimationBananaSpawn, timer / AnimationVelocity, false);
+			timer++;
+			spawnedBananas--;
+		}
+	}
+}
 
-			ADKItems* SpawnBanana = World->SpawnActor<ADKItems>(BananaToSpawn, SpawnLocation, FRotator::ZeroRotator);
-
-			if (SpawnBanana)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Ok spoanwed: %s"), *SpawnLocation.ToString());
-			}
-
-			totalBanana--;
+void ABananaBunch::AnimationBananaSpawn()
+{
+	UWorld* const World = GetWorld();
+	if (World)
+	{
+		ADKItems* SpawnBanana = World->SpawnActor<ADKItems>(BananaToSpawn, GetActorLocation(), FRotator::ZeroRotator);
+		if (SpawnBanana)
+		{
+			SpawnBanana->AutoPlaySound = false;
+			SpawnBanana->PickUp();
+			UE_LOG(LogTemp, Warning, TEXT("Picking banana!!!!...."));
+		}
+		totalAnimBananas--;
+		if (totalAnimBananas == 0)
+		{
+			Destroy();
 		}
 	}
 }

@@ -20,8 +20,13 @@ public:
 	TSubclassOf<ADKItems> BananaToSpawn;
 
 	UPROPERTY(EditDefaultsOnly)
-	class UCurveFloat* fCurveSpawn;
+	float AnimationVelocity;
 
 	UFUNCTION(BluePrintCallable, Category = "GameItems")
 	void PickUpAnimation();
+
+private:
+
+	int totalAnimBananas = 10;
+	void AnimationBananaSpawn();
 };
