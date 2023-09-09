@@ -102,3 +102,4 @@ Plugins/**/Intermediate/*
 Sound/Resources/*
 UnrealDK/Build/*
 UnrealDK/Windows/*
+.DS_Store
