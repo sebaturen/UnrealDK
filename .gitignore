@@ -106,3 +106,5 @@ UnrealDK/Windows/*
 UnrealDK/.vscode/*
 .ignore
 *.code-workspace
+*.sln
+*.vsconfig
