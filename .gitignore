@@ -103,3 +103,6 @@ Sound/Resources/*
 UnrealDK/Build/*
 UnrealDK/Windows/*
 .DS_Store
+UnrealDK/.vscode/*
+.ignore
+*.code-workspace
