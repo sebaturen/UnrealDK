@@ -33,7 +33,6 @@ void ABananaBunch::AnimationBananaSpawn()
 		{
 			SpawnBanana->AutoPlaySound = false;
 			SpawnBanana->PickUp();
-			UE_LOG(LogTemp, Warning, TEXT("Picking banana!!!!.... %d"), totalAnimBananas);
 		}
 		totalAnimBananas--;
 		if (totalAnimBananas == 0)

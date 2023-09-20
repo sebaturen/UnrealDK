@@ -13,8 +13,10 @@ public class UnrealDK : ModuleRules
 			"CoreUObject", 
 			"Engine", 
 			"InputCore",
-			"PhysicsCore" 
-		});
+			"PhysicsCore",
+			"PaperZD",
+            "AIModule"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
