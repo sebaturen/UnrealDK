@@ -1,10 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DKEnemy.h"
+#include "Enemies/DKEnemy.h"
 #include "DKPlayerCharacter.h"
 
-// Unreal q
+// DK Game
+#include "Enemies/KillVFX.h"
+
+// Unreal
 #include "Math/UnrealMathUtility.h"
 #include "PaperFlipbookComponent.h"
 #include "AIController.h"
@@ -100,6 +103,12 @@ void ADKEnemy::PatrolTickSpawn()
     }
 }
 
+/**
+* Used to "look" the Player Character, in DK Kremling or Bearth enemy
+* 
+* Calculate angle betwen Enemy and Player, and use 180-0 angle to determinate the sprite
+* or rotation
+*/
 void ADKEnemy::FollowCharacter()
 {
     APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
@@ -130,6 +139,19 @@ void ADKEnemy::FollowCharacter()
     }
 }
 
+/**
+* Implement custom behavior when Player is on screen
+*/
+void ADKEnemy::CharacterOnScreen_Implementation(float Angle)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Character on screen DKEnemy implementation...: %d"), Angle);
+}
+
+/**
+* =============================
+* Start - PATROL BEHAVIOR
+* =============================
+*/
 void ADKEnemy::Patrol()
 {
     bIsPatrolOn = true;
@@ -165,13 +187,18 @@ void ADKEnemy::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Typ
     }
 }
 
+/**
+* =============================
+* End - PATROL BEHAVIOR
+* =============================
+*/
 
-void ADKEnemy::CharacterOnScreen_Implementation(float Angle)
-{
-    UE_LOG(LogTemp, Warning, TEXT("Character on screen DKEnemy implementation...: %d"), Angle);
-}
+/**
+* =============================
+* Start - COLLISION BEHAVIOR (on kill collision, damange or bounce)
+* =============================
+*/
 
-// ScreenZone overlap events
 void ADKEnemy::OnScreenZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     UE_LOG(LogTemp, Warning, TEXT("OnScreenZoneOverlapBegin ScreenZone %s - %s"), *KillCollision->GetName(), *GetName());
@@ -208,11 +235,34 @@ void ADKEnemy::OnScreenZoneOverlapEnd(class UPrimitiveComponent* OverlappedComp,
 
 void ADKEnemy::OnKillZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (Cast<ADKPlayerCharacter>(OtherActor) && !bIsDead && !bWasRespawning && eDamageBehavior == EDKDamageBehavior::DEAD)
+    if (Cast<ADKPlayerCharacter>(OtherActor) && !bIsDead && !bWasRespawning && eDamageBehavior == EDKDamageBehavior::Dead)
     {
+        APawn* CurrentEnemy = Cast<AAIController>(GetController())->GetPawn();
         bIsDead = true;
         UGameplayStatics::PlaySound2D(this, HitSound);
-        // TODO spawn actor y asdasd
+
+        // Kill effect
+        UWorld* const World = GetWorld();
+        if (World)
+        {
+            TSubclassOf<AKillVFX> KillVFX = AKillVFX::StaticClass();
+            FVector Post = CurrentEnemy->GetActorLocation();
+            UE_LOG(LogTemp, Warning, TEXT("Start... New actor in %d, %d, %d"), Post.X, Post.Y, Post.Z);
+            UE_LOG(LogTemp, Warning, TEXT("Start... New actor in %s"), *CurrentEnemy->GetActorLabel());
+
+            World->SpawnActor<AKillVFX>(KillVFX, GetActorLocation(), FRotator::ZeroRotator);
+            // TODO: Replace if move left or right
+        }
+
+        // Dead flipbook
+        GetSprite()->SetLooping(false);
+        GetSprite()->SetFlipbook(KillFlipbook);
+
+        // Dead Movement
+        GetCharacterMovement()->StopActiveMovement();
+        FVector CurrentLocation = GetActorLocation();
+        SetActorLocation(FVector(CurrentLocation.X, 100.0f, CurrentLocation.Z));
+        // translation to new position
     }
 }
 
@@ -223,13 +273,19 @@ void ADKEnemy::OnDamageZoneOverlapBegin(class UPrimitiveComponent* OverlappedCom
     {
         switch (eDamageBehavior)
         {
-        case EDKDamageBehavior::DEAD:
+        case EDKDamageBehavior::Dead:
             PlayerCharacter->OnDamage();
             break;
-        case EDKDamageBehavior::BOUNCHE:
+        case EDKDamageBehavior::Bounce:
             break;
         default:
             break;
         }
     }
 }
+
+/**
+* =============================
+* End - COLLISION BEHAVIOR (on kill collision, damange or bounce)
+* =============================
+*/

@@ -7,14 +7,15 @@
 #include "Components/BoxComponent.h"
 #include "Engine/TargetPoint.h"
 #include "AIController.h"
+#include "PaperFlipbook.h"
 
 #include "DKEnemy.generated.h"
 
 UENUM(BlueprintType)
 enum class EDKDamageBehavior : uint8
 {
-    DEAD = 0,
-    BOUNCHE = 1
+    Dead = 0,
+    Bounce = 1
 };
 
 /**
@@ -31,16 +32,16 @@ public:
     
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-    
-    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Enemy")
-    void CharacterOnScreen(float Angle);
-    virtual void CharacterOnScreen_Implementation(float Angle);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
     ATargetPoint* StartMoveTargetPoint = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
     ATargetPoint* EndMoveTargetPoint = nullptr;
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Enemy")
+    void CharacterOnScreen(float Angle);
+    virtual void CharacterOnScreen_Implementation(float Angle);
 
 protected:
     // Called when the game starts or when spawned
@@ -49,8 +50,15 @@ protected:
     void Patrol();
     void MovePatrol();
 
-    UFUNCTION(BlueprintCallable, Category = "Enemy")
-    void OnTickValidations();
+    // Configurations properties
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+    bool bWasPatrolBehavior = true;
+    UPROPERTY(EditAnywhere, Category = "Enemy")
+    UPaperFlipbook* KillFlipbook;
+    UPROPERTY(EditAnywhere, Category = "Enemy")
+    USoundBase* HitSound;
+    UPROPERTY(EditAnywhere)
+    EDKDamageBehavior eDamageBehavior = EDKDamageBehavior::Dead;
 
     // Colision 
     UPROPERTY(EditAnywhere, Category = "Enemy")
@@ -69,20 +77,13 @@ protected:
     void OnKillZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
     UFUNCTION()
     void OnDamageZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-    
-    // Configurations
-    UPROPERTY(EditAnywhere, Category = "Enemy")
-    USoundBase* HitSound;
-
-    // Behavior definition
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
-    bool bWasPatrolBehavior = true;
-
-    UPROPERTY(EditAnywhere)
-    EDKDamageBehavior eDamageBehavior = EDKDamageBehavior::DEAD;
-
+   
+    // TODO? how I can implement this delegate? On movement completed
     UFUNCTION()
     void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
+
+    UFUNCTION(BlueprintCallable, Category = "Enemy")
+    void OnTickValidations();
 
 private:
     
