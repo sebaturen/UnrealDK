@@ -11,6 +11,8 @@
 
 #include "DKEnemy.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDKEnemyOnCharacterOnScreen, float, Angle);
+
 UENUM(BlueprintType)
 enum class EDKDamageBehavior : uint8
 {
@@ -39,9 +41,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
     ATargetPoint* EndMoveTargetPoint = nullptr;
 
-    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Enemy")
-    void CharacterOnScreen(float Angle);
-    virtual void CharacterOnScreen_Implementation(float Angle);
+    UPROPERTY(BlueprintAssignable, Category = "Enemy")
+    FDKEnemyOnCharacterOnScreen OnCharacterOnScreen;
 
 protected:
     // Called when the game starts or when spawned
@@ -94,6 +95,7 @@ private:
     bool bWasRespawning = false;
     bool bIsPatrolOn = false;
     bool bIsDead = false;
+    bool bMovingToFirst = true;
     
     // Functions
     void PatrolTickSpawn();

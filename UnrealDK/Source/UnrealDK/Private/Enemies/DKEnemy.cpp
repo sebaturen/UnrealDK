@@ -52,6 +52,8 @@ ADKEnemy::ADKEnemy()
     DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &ADKEnemy::OnDamageZoneOverlapBegin);
     DamageCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
+    // Default movement speed
+    GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 }
 
 // Save init values, use for respawn process
@@ -104,7 +106,7 @@ void ADKEnemy::PatrolTickSpawn()
 }
 
 /**
-* Used to "look" the Player Character, in DK Kremling or Bearth enemy
+* Used to "look" the Player Character, used from DK Kremling or Bearth enemy
 * 
 * Calculate angle betwen Enemy and Player, and use 180-0 angle to determinate the sprite
 * or rotation
@@ -121,7 +123,7 @@ void ADKEnemy::FollowCharacter()
             FVector PlayerLocation = PlayerCharacter->GetActorLocation();
             FVector EnemyLocation = GetActorLocation();
             
-            FVector2D DiffVector = FVector2D(PlayerLocation.X - EnemyLocation.X, PlayerLocation.Y - EnemyLocation.Y);
+            FVector2D DiffVector = FVector2D(PlayerLocation.X - EnemyLocation.X, PlayerLocation.Z - EnemyLocation.Z);
             FVector2D NormalVector = DiffVector.GetSafeNormal();
             
             // Geting angle
@@ -129,22 +131,14 @@ void ADKEnemy::FollowCharacter()
             float AngleInDegrees = FMath::RadiansToDegrees(AngleInRadians);
 
             // Rotate if enemy look another location
-            float RotateAngle = (AngleInDegrees < 90) ? -180.0f : 0.0f;
-            FRotator NewRotation = FRotator(0.0f, 0.0f, RotateAngle);
+            float RotateAngle = (AngleInDegrees < 90 && AngleInDegrees > -90) ? -180.0f : 0.0f;
+            FRotator NewRotation = FRotator(0.0f, RotateAngle, 0.0f);
             GetSprite()->SetWorldRotation(NewRotation); // , false, nullptr, ETeleportType::None);
             
             // Call event
-            CharacterOnScreen(AngleInDegrees);
+            OnCharacterOnScreen.Broadcast(AngleInDegrees);
         }
     }
-}
-
-/**
-* Implement custom behavior when Player is on screen
-*/
-void ADKEnemy::CharacterOnScreen_Implementation(float Angle)
-{
-    UE_LOG(LogTemp, Warning, TEXT("Character on screen DKEnemy implementation...: %d"), Angle);
 }
 
 /**
@@ -162,29 +156,21 @@ void ADKEnemy::MovePatrol()
 {
     if (!bIsDead && bIsPatrolOn)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Start movement!!"));
+        ATargetPoint* MoveDirection = bMovingToFirst ? StartMoveTargetPoint : EndMoveTargetPoint;
+        bMovingToFirst = !bMovingToFirst;
+
         AAIController* AIPawnController = Cast<AAIController>(GetController());
-        if (AIPawnController && StartMoveTargetPoint)
+        if (AIPawnController && MoveDirection)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Move to actor 1"));
-            AIPawnController->MoveToActor(StartMoveTargetPoint, -1.0f, true, false);
-            //AIPawnController->OnMoveCompleted.AddDynamic(this, &ADKEnemy::OnPatrolMoveStartCompleted); <-- call OnMoveCompleted?
+            AIPawnController->MoveToActor(MoveDirection, -1.0f, true, false);
+            AIPawnController->ReceiveMoveCompleted.AddUniqueDynamic(this, &ADKEnemy::OnMoveCompleted);
         }
     }
 }
 
 void ADKEnemy::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
 {
-    if (bIsPatrolOn && !bIsDead)
-    {
-        AAIController* AIPawnController = Cast<AAIController>(GetController());
-        if (AIPawnController && EndMoveTargetPoint)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("Move to actor 2"));
-            AIPawnController->MoveToActor(EndMoveTargetPoint, -1.0f, true, false);
-            //AIPawnController->OnMoveCompleted.AddDynamic(this, &ADKEnemy::OnPatrolMoveStartCompleted); <-- call MovePatrol();
-        }
-    }
+    MovePatrol();
 }
 
 /**
@@ -201,7 +187,6 @@ void ADKEnemy::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Typ
 
 void ADKEnemy::OnScreenZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    UE_LOG(LogTemp, Warning, TEXT("OnScreenZoneOverlapBegin ScreenZone %s - %s"), *KillCollision->GetName(), *GetName());
     if (Cast<ADKPlayerCharacter>(OtherActor)) // if overlap is character
     {
         if (!bWasRespawning)
@@ -221,7 +206,6 @@ void ADKEnemy::OnScreenZoneOverlapBegin(class UPrimitiveComponent* OverlappedCom
 
 void ADKEnemy::OnScreenZoneOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    UE_LOG(LogTemp, Warning, TEXT("OnScreenZoneOverlapEnd ScreenZone %s - %s"), *KillCollision->GetName(), *GetName());
     if (Cast<ADKPlayerCharacter>(OtherActor) && !bIsDead) // if overlap is character
     {
         // Disable patrol and prepare for re-spawn

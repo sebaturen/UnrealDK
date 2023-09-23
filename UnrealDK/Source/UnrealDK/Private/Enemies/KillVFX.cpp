@@ -43,7 +43,7 @@ void AKillVFX::TranslationEvent(float DeltaTime)
 {
 	FVector NewLocation = FMath::Lerp(StartLocation, TargetLocation, MoveSpeed * DeltaTime);
 	SetActorLocation(NewLocation);
-	UE_LOG(LogTemp, Warning, TEXT("Moving... %d, %d"), NewLocation.X, TargetLocation.X);
+	UE_LOG(LogTemp, Warning, TEXT("KillFX Moving... %d, %d"), NewLocation.X, TargetLocation.X);
 
 	// Destroy if arrived
 	if (NewLocation.X < TargetLocation.X)
