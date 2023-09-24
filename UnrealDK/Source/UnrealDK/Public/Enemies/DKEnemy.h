@@ -11,8 +11,6 @@
 
 #include "DKEnemy.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDKEnemyOnCharacterOnScreen, float, Angle);
-
 UENUM(BlueprintType)
 enum class EDKDamageBehavior : uint8
 {
@@ -35,14 +33,14 @@ public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DK Enemy")
     ATargetPoint* StartMoveTargetPoint = nullptr;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DK Enemy")
     ATargetPoint* EndMoveTargetPoint = nullptr;
 
-    UPROPERTY(BlueprintAssignable, Category = "Enemy")
-    FDKEnemyOnCharacterOnScreen OnCharacterOnScreen;
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "DK Enemy")
+    void OnCharacterOnScreen(float Angle);
 
 protected:
     // Called when the game starts or when spawned
@@ -52,21 +50,21 @@ protected:
     void MovePatrol();
 
     // Configurations properties
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DK Enemy")
     bool bWasPatrolBehavior = true;
-    UPROPERTY(EditAnywhere, Category = "Enemy")
+    UPROPERTY(EditAnywhere, Category = "DK Enemy")
     UPaperFlipbook* KillFlipbook;
-    UPROPERTY(EditAnywhere, Category = "Enemy")
+    UPROPERTY(EditAnywhere, Category = "DK Enemy")
     USoundBase* HitSound;
     UPROPERTY(EditAnywhere)
     EDKDamageBehavior eDamageBehavior = EDKDamageBehavior::Dead;
 
     // Colision 
-    UPROPERTY(EditAnywhere, Category = "Enemy")
+    UPROPERTY(EditAnywhere, Category = "DK Enemy")
     UBoxComponent* ScreenZone;
-    UPROPERTY(EditAnywhere, Category = "Enemy")
+    UPROPERTY(EditAnywhere, Category = "DK Enemy")
     UBoxComponent* KillCollision;
-    UPROPERTY(EditAnywhere, Category = "Enemy")
+    UPROPERTY(EditAnywhere, Category = "DK Enemy")
     UBoxComponent* DamageCollision;
 
     // On screen overlap event
@@ -83,7 +81,7 @@ protected:
     UFUNCTION()
     void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
 
-    UFUNCTION(BlueprintCallable, Category = "Enemy")
+    UFUNCTION(BlueprintCallable, Category = "DK Enemy")
     void OnTickValidations();
 
 private:

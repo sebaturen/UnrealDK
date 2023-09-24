@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float AnimationVelocity;
 
-	UFUNCTION(BluePrintCallable, Category = "GameItems")
+	UFUNCTION(BluePrintCallable, Category = "DK Items")
 	void PickUpAnimation();
 
 private:

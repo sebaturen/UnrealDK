@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PaperCharacter.h"
 #include "DKItems.generated.h"
 
 UCLASS(Abstract)
@@ -15,11 +16,14 @@ public:
 	// Sets default values for this actor's properties
 	ADKItems();
 	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GameItems")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "DK Items")
 	void PickUp();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameItems")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DK Items")
 	bool AutoPlaySound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DK Items")
+	UPaperFlipbookComponent* Sprite = nullptr;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -27,5 +31,17 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable, Category = "DK Items")
+	void MoveToCorner();
+	void MoveToCornerInterpolation();
+
+private:
+
+	FVector MoveToCornerStartPosition;
+	float MoveToCornerStartTime;
+	float MoveToCornerFinalTime;
+	FTimerHandle MoveToCornerInterpolacionHandle;
+	const float MoveToCornerDuration = 0.5f;
 
 };

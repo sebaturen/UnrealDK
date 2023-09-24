@@ -136,9 +136,14 @@ void ADKEnemy::FollowCharacter()
             GetSprite()->SetWorldRotation(NewRotation); // , false, nullptr, ETeleportType::None);
             
             // Call event
-            OnCharacterOnScreen.Broadcast(AngleInDegrees);
+            OnCharacterOnScreen(AngleInDegrees);
         }
     }
+}
+
+void ADKEnemy::OnCharacterOnScreen_Implementation(float Angle)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Character on screen implemented on base..."));
 }
 
 /**
