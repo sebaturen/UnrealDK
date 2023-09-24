@@ -54,7 +54,6 @@ ADKEnemy::ADKEnemy()
 
     // Default movement speed
     GetCharacterMovement()->MaxWalkSpeed = 150.0f;
-
 }
 
 // Save init values, use for respawn process
@@ -63,9 +62,6 @@ void ADKEnemy::BeginPlay()
     Super::BeginPlay();
     vSpawnLocation = GetActorLocation();
     rSpawnRotation = GetActorRotation();
-
-    // Base Flipbook
-    SourceFlipbook = GetSprite()->GetFlipbook();
 }
 
 // Called every frame
@@ -167,7 +163,8 @@ void ADKEnemy::MovePatrol()
     {
         if (bMoveChangeDirection)
         {
-            GetSprite()->SetFlipbook(FlipFlipbook);
+            UE_LOG(LogTemp, Warning, TEXT("Swap?"));
+            GetSprite()->SetFlipbook(SwapFlipbook);
             GetSprite()->SetLooping(false);
             GetSprite()->OnFinishedPlaying.AddUniqueDynamic(this, &ADKEnemy::MoveFlipFinished);
         }
@@ -188,23 +185,9 @@ void ADKEnemy::MovePatrol()
 
 void ADKEnemy::MoveFlipFinished()
 {
-    FRotator NewRotation = GetSprite()->GetRelativeRotation();
-    NewRotation.Yaw = (NewRotation.Yaw == 0.0f) ? 180.0f : 0.0f;
-    GetSprite()->SetRelativeRotation(NewRotation);
+    bMoveChangeDirection = false;
 
-    if (bMoveChangeDirection)
-    {
-        bMoveChangeDirection = false;
-        //GetSprite()->Reverse();
-        GetSprite()->Play();
-    }
-    else
-    {
-        GetSprite()->SetFlipbook(SourceFlipbook);
-        GetSprite()->SetLooping(true);
-        GetSprite()->PlayFromStart();
-        MovePatrol();
-    }
+    MovePatrol();
 }
 
 void ADKEnemy::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
@@ -280,7 +263,7 @@ void ADKEnemy::OnKillZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp,
 
         // Dead flipbook
         GetSprite()->SetLooping(false);
-        GetSprite()->SetFlipbook(DieFlipbook);
+        GetSprite()->SetFlipbook(KillFlipbook);
 
         // Dead Movement
         GetCharacterMovement()->StopActiveMovement();

@@ -39,7 +39,7 @@ void ADKItems::PickUp_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("Pickup implemented on base..."));
 }
 
-void ADKItems::MoveToCorner()
+void ADKItems::MoveToCorner(bool Left)
 {
 	MoveToCornerStartPosition = GetActorLocation();
 	MoveToCornerStartPosition.Y = 100.0f;
@@ -47,6 +47,14 @@ void ADKItems::MoveToCorner()
 
 	MoveToCornerStartTime = GetWorld()->GetTimeSeconds();
 	MoveToCornerFinalTime = MoveToCornerStartTime + MoveToCornerDuration;
+
+	MoveToCornerScreenPosition = FVector2D(80.0f, 80.0f);
+	if (!Left)
+	{
+		FVector2D ScreenSize;
+		GetWorld()->GetGameViewport()->GetViewportSize(ScreenSize);
+		MoveToCornerScreenPosition.X = ScreenSize.X - 80.0f;
+	}
 
 	GetWorld()->GetTimerManager().SetTimer(MoveToCornerInterpolacionHandle, this, &ADKItems::MoveToCornerInterpolation, 0.01f, true);
 }
@@ -57,10 +65,9 @@ void ADKItems::MoveToCornerInterpolation()
 
 	// geting destination position 10,10 in screen to world
 	APlayerController* Player = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	FVector2D ScreenPosition(10.0f, 10.0f);
 	FVector TargetLocation;
 	FVector WorldDirection;
-	UGameplayStatics::DeprojectScreenToWorld(Player, ScreenPosition, TargetLocation, WorldDirection);
+	UGameplayStatics::DeprojectScreenToWorld(Player, MoveToCornerScreenPosition, TargetLocation, WorldDirection);
 
 	if (CurrenTime >= MoveToCornerFinalTime)
 	{

@@ -53,9 +53,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DK Enemy")
     bool bWasPatrolBehavior = true;
     UPROPERTY(EditAnywhere, Category = "DK Enemy")
-    UPaperFlipbook* DieFlipbook;
+    UPaperFlipbook* KillFlipbook;
     UPROPERTY(EditAnywhere, Category = "DK Enemy")
-    UPaperFlipbook* FlipFlipbook;
+    UPaperFlipbook* SwapFlipbook;
     UPROPERTY(EditAnywhere, Category = "DK Enemy")
     USoundBase* HitSound;
     UPROPERTY(EditAnywhere)
@@ -99,7 +99,6 @@ private:
     bool bIsDead = false;
     bool bMovingToFirst = true;
     bool bMoveChangeDirection = false;
-    UPaperFlipbook* SourceFlipbook;
     
     // Functions
     void PatrolTickSpawn();

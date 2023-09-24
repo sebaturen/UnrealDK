@@ -33,7 +33,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "DK Items")
-	void MoveToCorner();
+	void MoveToCorner(bool Left = true);
 	void MoveToCornerInterpolation();
 
 private:
@@ -41,6 +41,7 @@ private:
 	FVector MoveToCornerStartPosition;
 	float MoveToCornerStartTime;
 	float MoveToCornerFinalTime;
+	FVector2D MoveToCornerScreenPosition;
 	FTimerHandle MoveToCornerInterpolacionHandle;
 	const float MoveToCornerDuration = 0.5f;
 
