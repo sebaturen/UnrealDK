@@ -3,8 +3,9 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "s01e01.tmx",
+    "activeFile": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/doorstop_dash.tsx",
     "expandedProjectPaths": [
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash",
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -12,6 +13,18 @@
         "189810.tsx": {
             "scaleInDock": 2,
             "scaleInEditor": 2
+        },
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/doorstop_dash.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 3
+        },
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/s01e02.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -27.66666666666663,
+                "y": 440
+            }
         },
         "lakeside_limbo.tsx": {
             "scaleInDock": 3,
@@ -21,24 +34,28 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 3165,
-                "y": 224
+                "x": 3071.5,
+                "y": 223
             }
         }
     },
     "last.exportedFilePath": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/LakaOrangatangaStages",
     "last.externalTilesetPath": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/LakaOrangatangaStages",
-    "last.imagePath": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/LakaOrangatangaStages/Tiles",
+    "last.imagePath": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/Tileset",
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
     "openFiles": [
         "s01e01.tmx",
-        "lakeside_limbo.tsx"
+        "lakeside_limbo.tsx",
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/doorstop_dash.tsx",
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/s01e02.tmx"
     ],
     "project": "s01e01.tiled-project",
     "recentFiles": [
+        "s01e01.tmx",
         "lakeside_limbo.tsx",
-        "s01e01.tmx"
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/s01e02.tmx",
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/doorstop_dash.tsx"
     ],
     "resizeMap.removeObjects": true,
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)",
