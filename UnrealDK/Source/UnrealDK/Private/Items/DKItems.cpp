@@ -17,7 +17,7 @@ ADKItems::ADKItems()
 
 	// SetDefault Component
 	Sprite = CreateOptionalDefaultSubobject<UPaperFlipbookComponent>(APaperCharacter::SpriteComponentName);
-	//Sprite->SetupAttachment(GetCapsuleComponent());
+	Sprite->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
