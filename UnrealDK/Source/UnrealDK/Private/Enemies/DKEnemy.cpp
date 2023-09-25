@@ -119,7 +119,7 @@ void ADKEnemy::FollowCharacter()
 {
     APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
     
-    if (PlayerController)
+    if (PlayerController && !bIsFlipStart)
     {
         ACharacter* PlayerCharacter = PlayerController->GetCharacter(); // TODO: I can cast using a c++ class from character, now I use generic because the character only exist on blueprint
         if (PlayerCharacter)
@@ -135,9 +135,21 @@ void ADKEnemy::FollowCharacter()
             float AngleInDegrees = FMath::RadiansToDegrees(AngleInRadians);
 
             // Rotate if enemy look another location
-            float RotateAngle = (AngleInDegrees < 90 && AngleInDegrees > -90) ? -180.0f : 0.0f;
-            FRotator NewRotation = FRotator(0.0f, RotateAngle, 0.0f);
-            GetSprite()->SetWorldRotation(NewRotation); // , false, nullptr, ETeleportType::None);
+            /*FRotator ActualRotation = GetSprite()->GetRelativeRotation();
+            UE_LOG(LogTemp, Warning, TEXT("Actual Rotate %d | Angle: %d"), ActualRotation.Yaw, AngleInDegrees);
+            if (AngleInDegrees < 90 && AngleInDegrees > -90 && ActualRotation.Yaw == 180.0f)
+            {
+                MoveFlip();
+            }*/
+            FRotator NewRotation = GetSprite()->GetRelativeRotation();
+            float oldRotation = NewRotation.Yaw;
+            NewRotation.Yaw = (AngleInDegrees < 90 && AngleInDegrees > -90) ? 0.0f: 180.0f;
+            if (oldRotation != NewRotation.Yaw)
+            {
+                MoveFlip();
+                UE_LOG(LogTemp, Warning, TEXT("Actual Rotate  Change yaw"));
+            }
+            //GetSprite()->SetRelativeRotation(NewRotation); // , false, nullptr, ETeleportType::None);*/
             
             // Call event
             OnCharacterOnScreen(AngleInDegrees);
@@ -167,9 +179,7 @@ void ADKEnemy::MovePatrol()
     {
         if (bMoveChangeDirection)
         {
-            GetSprite()->SetFlipbook(FlipFlipbook);
-            GetSprite()->SetLooping(false);
-            GetSprite()->OnFinishedPlaying.AddUniqueDynamic(this, &ADKEnemy::MoveFlipFinished);
+            MoveFlip();
         }
         else 
         {
@@ -186,24 +196,38 @@ void ADKEnemy::MovePatrol()
     }
 }
 
-void ADKEnemy::MoveFlipFinished()
+void ADKEnemy::MoveFlip()
 {
-    FRotator NewRotation = GetSprite()->GetRelativeRotation();
-    NewRotation.Yaw = (NewRotation.Yaw == 0.0f) ? 180.0f : 0.0f;
-    GetSprite()->SetRelativeRotation(NewRotation);
+    if (!bIsDead)
+    {
+        if (!bIsFlipStart)
+        {
+            GetSprite()->SetFlipbook(FlipFlipbook);
+            GetSprite()->SetLooping(false);
+            GetSprite()->OnFinishedPlaying.AddUniqueDynamic(this, &ADKEnemy::MoveFlip);
+            bIsFlipStart = true;
+            return;
+        }
 
-    if (bMoveChangeDirection)
-    {
-        bMoveChangeDirection = false;
-        //GetSprite()->Reverse();
-        GetSprite()->Play();
-    }
-    else
-    {
-        GetSprite()->SetFlipbook(SourceFlipbook);
-        GetSprite()->SetLooping(true);
-        GetSprite()->PlayFromStart();
-        MovePatrol();
+        FRotator NewRotation = GetSprite()->GetRelativeRotation();
+        NewRotation.Yaw = (NewRotation.Yaw == 0.0f) ? 180.0f : 0.0f;
+        GetSprite()->SetRelativeRotation(NewRotation);
+
+        if (bMoveChangeDirection)
+        {
+            bMoveChangeDirection = false;
+            //GetSprite()->Reverse();
+            GetSprite()->Play();
+        }
+        else
+        {
+            GetSprite()->SetFlipbook(SourceFlipbook);
+            GetSprite()->SetLooping(true);
+            GetSprite()->PlayFromStart();
+
+            bIsFlipStart = false;
+            if (bIsPatrolOn) MovePatrol();
+        }
     }
 }
 

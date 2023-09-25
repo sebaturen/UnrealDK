@@ -86,7 +86,7 @@ protected:
     UFUNCTION(BlueprintCallable, Category = "DK Enemy")
     void OnTickValidations();
     UFUNCTION()
-    void MoveFlipFinished();
+    void MoveFlip();
 
 private:
     
@@ -99,6 +99,7 @@ private:
     bool bIsDead = false;
     bool bMovingToFirst = true;
     bool bMoveChangeDirection = false;
+    bool bIsFlipStart = false;
     UPaperFlipbook* SourceFlipbook;
     
     // Functions
