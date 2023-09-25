@@ -39,7 +39,7 @@ void ADKItems::PickUp_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("Pickup implemented on base..."));
 }
 
-void ADKItems::MoveToCorner(bool Left)
+void ADKItems::MoveToCorner(EDKMoveBehavior MoveTo)
 {
 	MoveToCornerStartPosition = GetActorLocation();
 	MoveToCornerStartPosition.Y = 100.0f;
@@ -48,12 +48,20 @@ void ADKItems::MoveToCorner(bool Left)
 	MoveToCornerStartTime = GetWorld()->GetTimeSeconds();
 	MoveToCornerFinalTime = MoveToCornerStartTime + MoveToCornerDuration;
 
-	MoveToCornerScreenPosition = FVector2D(80.0f, 80.0f);
-	if (!Left)
+	FVector2D ScreenSize;
+	switch (MoveTo)
 	{
-		FVector2D ScreenSize;
-		GetWorld()->GetGameViewport()->GetViewportSize(ScreenSize);
-		MoveToCornerScreenPosition.X = ScreenSize.X - 80.0f;
+		case EDKMoveBehavior::Right:
+			GetWorld()->GetGameViewport()->GetViewportSize(ScreenSize);
+			MoveToCornerScreenPosition.X = ScreenSize.X - 80.0f;
+			break;
+		case EDKMoveBehavior::Midle:
+			GetWorld()->GetGameViewport()->GetViewportSize(ScreenSize);
+			MoveToCornerScreenPosition.X = ScreenSize.X / 2;
+			break;
+		default:
+			MoveToCornerScreenPosition = FVector2D(80.0f, 80.0f);
+			break;
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(MoveToCornerInterpolacionHandle, this, &ADKItems::MoveToCornerInterpolation, 0.01f, true);

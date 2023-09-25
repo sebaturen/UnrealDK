@@ -7,6 +7,14 @@
 #include "PaperCharacter.h"
 #include "DKItems.generated.h"
 
+UENUM(BlueprintType)
+enum class EDKMoveBehavior : uint8
+{
+	Left,
+	Right,
+	Midle
+};
+
 UCLASS(Abstract)
 class UNREALDK_API ADKItems : public AActor
 {
@@ -33,7 +41,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "DK Items")
-	void MoveToCorner(bool Left = true);
+	void MoveToCorner(EDKMoveBehavior MoveTo = EDKMoveBehavior::Left);
 	void MoveToCornerInterpolation();
 
 private:
