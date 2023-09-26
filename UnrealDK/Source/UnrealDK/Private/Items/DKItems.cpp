@@ -49,14 +49,13 @@ void ADKItems::MoveToCorner(EDKMoveBehavior MoveTo)
 	MoveToCornerFinalTime = MoveToCornerStartTime + MoveToCornerDuration;
 
 	FVector2D ScreenSize;
+	GetWorld()->GetGameViewport()->GetViewportSize(ScreenSize);
 	switch (MoveTo)
 	{
 		case EDKMoveBehavior::Right:
-			GetWorld()->GetGameViewport()->GetViewportSize(ScreenSize);
 			MoveToCornerScreenPosition.X = ScreenSize.X - 80.0f;
 			break;
 		case EDKMoveBehavior::Midle:
-			GetWorld()->GetGameViewport()->GetViewportSize(ScreenSize);
 			MoveToCornerScreenPosition.X = ScreenSize.X / 2;
 			break;
 		default:
