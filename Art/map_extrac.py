@@ -11,7 +11,7 @@ map_tile = Image.open(TAIL_MAP)
 map_det = Image.open(MAP_DET)
 
 # Separing tail in set
-def separing_tail(tailset):
+def separing_tail(tailset, typed):
     img_list = []
     image_arr = np.array(tailset)
 
@@ -28,21 +28,42 @@ def separing_tail(tailset):
             tail = image_arr[dim_h:dim_h_z, dim_w:dim_w_z] # 0:32, 0:32 [1]
             img_list.append(tail)
             #print(image_arr)
-            #image = Image.fromarray(tail)
-            #image.save(f"result/test_{j}_{i}.png")
+            #if j == 12 and i == 9 and typed == 2:
+            #	return tail
+            	#image = Image.fromarray(tail)
+            	#image.save(f"result/test_{j}_{i}.png")
+            #if j == 2 and i == 1 and typed == 1:
+            #    return tail
+                #image = Image.fromarray(tail)
+                #image.save(f"result/db_{j}_{i}.png")
         #return
     # print(img_list)
     return img_list
 
 def indexOf(search, db):
+    post = 1
     for i in db:
-        print(f"Type {type(i)} - {type(search)}")
-        if i == search:
-            print(f"find in {i}")
+        r = search - i
+        r[(r >= 240) | (r <= 10)] = 0
+        #print(f"Type {type(i)} - {type(search)}")
+        if not np.any(r):
+            if post == 1: # probably the error enable the empty tilset is equal to any other tile have only letters in black, so the information is a empty tile, force to really empty "0"
+                return 0
+            return post
+        post += 1
+    return 1 # have a information in map, not realy titl
     
-database = separing_tail(map_tile)
-map_img = separing_tail(map_det)
+database = separing_tail(map_tile, 1)
+map_img = separing_tail(map_det, 2)
 
+list_tiles = []
+i = 1
 for j in map_img:
-    indexOf(j, map_img)
+    post = indexOf(j, database)
+    list_tiles.append(post)
+    if i == 81:
+        print("")
+        i = 1
+    i+=1
+    print(f"{post},", end="")
     #break

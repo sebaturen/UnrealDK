@@ -3,11 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/doorstop_dash.tsx",
+    "activeFile": "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/s01e02.tmx",
+    "automapping.whileDrawing": false,
     "expandedProjectPaths": [
         "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash",
         "."
     ],
+    "exportAsImage.drawTileGrid": true,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "189810.tsx": {
@@ -15,15 +17,15 @@
             "scaleInEditor": 2
         },
         "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/doorstop_dash.tsx": {
-            "scaleInDock": 2,
+            "scaleInDock": 3,
             "scaleInEditor": 3
         },
         "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/s01e02.tmx": {
-            "scale": 1.5,
-            "selectedLayer": 0,
+            "scale": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": -27.66666666666663,
-                "y": 440
+                "x": 179,
+                "y": 401
             }
         },
         "lakeside_limbo.tsx": {
@@ -34,8 +36,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 3119.5,
-                "y": 207.5
+                "x": 3116,
+                "y": 205
             }
         }
     },
@@ -52,9 +54,9 @@
     ],
     "project": "s01e01.tiled-project",
     "recentFiles": [
+        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/s01e02.tmx",
         "s01e01.tmx",
         "lakeside_limbo.tsx",
-        "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/s01e02.tmx",
         "C:/Users/Seba/Documents/GitHub/UnrealDK/Art/DoorstopDash/doorstop_dash.tsx"
     ],
     "resizeMap.removeObjects": true,

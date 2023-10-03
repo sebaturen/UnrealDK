@@ -148,9 +148,10 @@
  <tile id="194"/>
  <tile id="545"/>
  <tile id="51"/>
- <tile id="52"/>
  <tile id="53"/>
+ <tile id="55"/>
  <tile id="54"/>
+ <tile id="52"/>
  <tile id="491"/>
  <tile id="133"/>
  <tile id="135"/>
@@ -158,7 +159,6 @@
  <tile id="175"/>
  <tile id="130"/>
  <tile id="497"/>
- <tile id="55"/>
  <tile id="66"/>
  <tile id="56"/>
  <tile id="227"/>
@@ -421,6 +421,7 @@
  <tile id="539"/>
  <tile id="560"/>
  <tile id="278"/>
+ <tile id="568"/>
  <tile id="371"/>
  <tile id="376"/>
  <tile id="487"/>
@@ -432,6 +433,8 @@
  <tile id="509"/>
  <tile id="298"/>
  <tile id="302"/>
+ <tile id="558"/>
+ <tile id="569"/>
  <tile id="303"/>
  <tile id="304"/>
  <tile id="306"/>
@@ -551,6 +554,12 @@
  <tile id="489"/>
  <tile id="496"/>
  <tile id="515"/>
+ <tile id="547"/>
+ <tile id="532"/>
+ <tile id="546"/>
+ <tile id="535"/>
+ <tile id="565"/>
+ <tile id="527"/>
  <tile id="510"/>
  <tile id="511"/>
  <tile id="512"/>
@@ -562,19 +571,10 @@
  <tile id="531"/>
  <tile id="553"/>
  <tile id="552"/>
- <tile id="527"/>
- <tile id="532"/>
- <tile id="535"/>
  <tile id="541"/>
  <tile id="542"/>
- <tile id="546"/>
- <tile id="547"/>
  <tile id="557"/>
- <tile id="558"/>
  <tile id="561"/>
  <tile id="563"/>
  <tile id="564"/>
- <tile id="565"/>
- <tile id="568"/>
- <tile id="569"/>
 </tileset>
