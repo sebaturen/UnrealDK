@@ -69,11 +69,7 @@ protected:
     UPROPERTY(EditAnywhere, Category = "DK Enemy")
     UBoxComponent* DamageCollision;
 
-    // On screen overlap event
-    UFUNCTION()
-    void OnScreenZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-    UFUNCTION()
-    void OnScreenZoneOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+    // On overlap event
     UFUNCTION()
     void OnKillZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
     UFUNCTION()
@@ -95,15 +91,16 @@ private:
     FRotator rSpawnRotation;
     bool bWasDead = false;
     bool bWasRespawning = false;
-    bool bIsPatrolOn = false;
+    int iRespawningGracePeriod = 3;
+    bool bWasPatrolOn = false;
     bool bIsDead = false;
     bool bMovingToFirst = true;
     bool bMoveChangeDirection = false;
     bool bIsFlipStart = false;
     UPaperFlipbook* SourceFlipbook;
+    UPaperFlipbook* EmptyFlipbook;
     
     // Functions
-    void PatrolTickSpawn();
     void FollowCharacter();
    
 };

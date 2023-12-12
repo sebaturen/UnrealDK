@@ -25,17 +25,6 @@ ADKEnemy::ADKEnemy()
     ensureMsgf(DefaultHitCue, TEXT("Default Hit cue not found!"));
     HitSound = DefaultHitCue;
 
-    // Set Screen zone collision
-    ScreenZone = CreateDefaultSubobject<UBoxComponent>(FName("Screen Zone"));
-    FVector ScreenZoneScale(9.5f, 5.75f, 5.75f);
-    FVector ScreenZoneBoxExtent(32.0f, 32.0f, 32.0f);
-    ScreenZone->SetupAttachment(RootComponent);
-    ScreenZone->SetWorldScale3D(ScreenZoneScale);
-    ScreenZone->SetBoxExtent(ScreenZoneBoxExtent);
-    ScreenZone->OnComponentBeginOverlap.AddDynamic(this, &ADKEnemy::OnScreenZoneOverlapBegin);
-    ScreenZone->OnComponentEndOverlap.AddDynamic(this, &ADKEnemy::OnScreenZoneOverlapEnd);
-    ScreenZone->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-
     // Collision
     GetCharacterMovement()->SetPlaneConstraintEnabled(true);
     GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 1.0f, 0.0f));
@@ -55,6 +44,15 @@ ADKEnemy::ADKEnemy()
     // Default movement speed
     GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 
+    // Empty Flipbook
+    EmptyFlipbook = LoadObject<UPaperFlipbook>(nullptr, TEXT("/Game/Assets/Sprites/EmptyFlipbook"));
+    ensureMsgf(DefaultHitCue, TEXT("Empty EmptyFlipbook not found!"));
+    //EmptyFlipbook->keyframe
+    /*UPaperSprite* EmptySprite = NewObject<UPaperSprite>();
+    EmptyFlipbook->
+    EmptyFlipbook->AddNewFrame(EmptySprite);
+    EmptyFlipbook->SetFramesPerSecond(1.0f);*/
+
 }
 
 // Save init values, use for respawn process
@@ -73,38 +71,58 @@ void ADKEnemy::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     OnTickValidations();
+
 }
 
 void ADKEnemy::OnTickValidations()
 {
     if (!bIsDead)
     {
-        if (bWasPatrolBehavior)
+        //UE_LOG(LogTemp, Warning, TEXT("TickValiation | %s"), *GetName(), WasRecentlyRendered());
+        // need respawn, and is in spawn location and not rendering
+        if (bWasRespawning && GetActorLocation().Equals(vSpawnLocation) && !WasRecentlyRendered())
         {
-            PatrolTickSpawn();
-        }
-        else {
-            FollowCharacter();
-        }
-    }
-}
-
-// Use to re-spawn
-void ADKEnemy::PatrolTickSpawn()
-{
-    if (bWasRespawning) // if need respawn
-    {
-        // valid if character is out off screen
-        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-        if (PlayerController)
-        {
-            ACharacter* PlayerCharacrter = PlayerController->GetCharacter();
-            UE_LOG(LogTemp, Warning, TEXT("PatrolTickSpawn ScreenZone %s - %s"), *KillCollision->GetName(), *GetName());
-            if (!ScreenZone->IsOverlappingActor(PlayerCharacrter)) // User out screen collision box
+            if (iRespawningGracePeriod > 0)
             {
-                GetSprite()->SetVisibility(true);
-                bWasRespawning = false;
+                iRespawningGracePeriod--;
             }
+            else
+            {
+                // Check if player is on screen...
+                bWasRespawning = false;
+                GetSprite()->SetFlipbook(SourceFlipbook);
+                iRespawningGracePeriod = 3;
+                UE_LOG(LogTemp, Warning, TEXT("TickValiation | %s | %d | %s"), *GetName(), WasRecentlyRendered(), *GetActorLocation().ToString());
+            }
+        }
+        // have petrol behavior, and is patrol on and isn't rendering, STOP imedialty
+        else if (bWasPatrolBehavior && bWasPatrolOn && !WasRecentlyRendered())
+        {
+            GetCharacterMovement()->StopActiveMovement();
+
+            // Restore sprite
+            GetSprite()->SetFlipbook(EmptyFlipbook);
+            GetSprite()->SetLooping(true);
+
+            // Restore flag to originals
+            bWasPatrolOn = false;
+            bWasRespawning = true;
+            bMovingToFirst = true;
+            bMoveChangeDirection = false;
+            bIsFlipStart = false;
+
+            // Teleport to new location
+            TeleportTo(vSpawnLocation, rSpawnRotation);
+        }
+        // have petrol behavior and is NOT start patrol and is NOT respawning and is rendering, DO PATROL
+        else if (bWasPatrolBehavior && !bWasPatrolOn && !bWasRespawning && WasRecentlyRendered())
+        {
+            Patrol();
+        }
+        // dons't have petrol behavior and is rendering, FOLLO CHARACTER (looking)
+        else if (!bWasPatrolBehavior && WasRecentlyRendered())
+        {
+            FollowCharacter();
         }
     }
 }
@@ -159,7 +177,7 @@ void ADKEnemy::FollowCharacter()
 
 void ADKEnemy::OnCharacterOnScreen_Implementation(float Angle)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Character on screen implemented on base..."));
+    //UE_LOG(LogTemp, Warning, TEXT("Character on screen implemented on base..."));
 }
 
 /**
@@ -169,13 +187,14 @@ void ADKEnemy::OnCharacterOnScreen_Implementation(float Angle)
 */
 void ADKEnemy::Patrol()
 {
-    bIsPatrolOn = true;
+    bWasPatrolOn = true;
     MovePatrol();
 }
 
 void ADKEnemy::MovePatrol()
 {
-    if (!bIsDead && bIsPatrolOn)
+    AAIController* AIPawnController = Cast<AAIController>(GetController());
+    if (!bIsDead && bWasPatrolOn)
     {
         if (bMoveChangeDirection)
         {
@@ -186,7 +205,6 @@ void ADKEnemy::MovePatrol()
             ATargetPoint* MoveDirection = bMovingToFirst ? StartMoveTargetPoint : EndMoveTargetPoint;
             bMovingToFirst = !bMovingToFirst;
 
-            AAIController* AIPawnController = Cast<AAIController>(GetController());
             if (AIPawnController && MoveDirection)
             {
                 AIPawnController->MoveToActor(MoveDirection, -1.0f, true, false);
@@ -194,11 +212,18 @@ void ADKEnemy::MovePatrol()
             }
         }
     }
+    else
+    {
+        if (AIPawnController)
+        {
+            AIPawnController->ReceiveMoveCompleted.RemoveDynamic(this, &ADKEnemy::OnMoveCompleted);
+        }
+    }
 }
 
 void ADKEnemy::MoveFlip()
 {
-    if (!bIsDead)
+    if (!bIsDead && !bWasRespawning)
     {
         if (!bIsFlipStart)
         {
@@ -226,15 +251,18 @@ void ADKEnemy::MoveFlip()
             GetSprite()->PlayFromStart();
 
             bIsFlipStart = false;
-            if (bIsPatrolOn) MovePatrol();
+            if (bWasPatrolOn) MovePatrol();
         }
     }
 }
 
 void ADKEnemy::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
 {
-    bMoveChangeDirection = true;
-    MovePatrol();
+    if (!bWasRespawning)
+    {
+        bMoveChangeDirection = true;
+        MovePatrol();
+    }
 }
 
 /**
@@ -248,38 +276,6 @@ void ADKEnemy::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Typ
 * Start - COLLISION BEHAVIOR (on kill collision, damange or bounce)
 * =============================
 */
-
-void ADKEnemy::OnScreenZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    if (Cast<ADKPlayerCharacter>(OtherActor)) // if overlap is character
-    {
-        if (!bWasRespawning)
-        {
-            if (bWasPatrolBehavior && !bIsPatrolOn)
-            {
-                // Patrol active
-                Patrol();
-            }
-            else {
-                // Character on screen
-                //CharacterOnScreen(0f);
-            }
-        }
-    }
-}
-
-void ADKEnemy::OnScreenZoneOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-    if (Cast<ADKPlayerCharacter>(OtherActor) && !bIsDead) // if overlap is character
-    {
-        // Disable patrol and prepare for re-spawn
-        bIsPatrolOn = false;
-        bWasRespawning = true;
-        GetCharacterMovement()->StopActiveMovement();
-        GetSprite()->SetVisibility(false);
-        TeleportTo(vSpawnLocation, rSpawnRotation);
-    }
-}
 
 void ADKEnemy::OnKillZoneOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
