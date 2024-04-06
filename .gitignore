@@ -108,3 +108,4 @@ UnrealDK/.vscode/*
 *.code-workspace
 *.sln
 *.vsconfig
+.idea/*
